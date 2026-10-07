@@ -80,16 +80,15 @@ def add_car():
     baga = float(input("Күніне бағасы: "))
     kui = input("Күйі (Бос/Брондалды): ")
 
-    # Қолжетімді филиалдарды көрсету
     show_filials()
 
     filial = int(input("\nФилиал ID таңдаңыз: "))
 
-    # Мұндай филиал бар екенін тексеру
-    cursor.execute(
-        "SELECT qala FROM Filialdar WHERE filial_id = ?",
-        filial
-    )
+    cursor.execute("""
+        SELECT qala
+        FROM Filialdar
+        WHERE filial_id = ?
+    """, filial)
 
     selected_filial = cursor.fetchone()
 
@@ -152,6 +151,56 @@ def delete_car():
         print("Мұндай ID табылмады.")
 
 
+# 5. Автокөлікті басқа қалаға қайтару
+def return_car_other_city():
+    print("\n===== АВТОКӨЛІКТІ БАСҚА ҚАЛАҒА ҚАЙТАРУ =====")
+
+    show_cars()
+
+    car_id = int(input("\nҚайтарылатын автокөлік ID: "))
+
+    cursor.execute("""
+        SELECT avtokolik_id
+        FROM Avtokolikter
+        WHERE avtokolik_id = ?
+    """, car_id)
+
+    car = cursor.fetchone()
+
+    if car is None:
+        print("Мұндай автокөлік табылмады.")
+        return
+
+    show_filials()
+
+    new_filial = int(input("\nҚайтарылатын филиал ID: "))
+
+    cursor.execute("""
+        SELECT qala
+        FROM Filialdar
+        WHERE filial_id = ?
+    """, new_filial)
+
+    filial = cursor.fetchone()
+
+    if filial is None:
+        print("Мұндай филиал табылмады.")
+        return
+
+    cursor.execute("""
+        UPDATE Avtokolikter
+        SET filial_id = ?, kui = N'Бос'
+        WHERE avtokolik_id = ?
+    """, new_filial, car_id)
+
+    conn.commit()
+
+    print(
+        f"Автокөлік {filial[0]} қаласындағы "
+        f"филиалға қайтарылды!"
+    )
+
+
 # Негізгі мәзір
 while True:
 
@@ -162,7 +211,8 @@ while True:
     print("2 - Жаңа автокөлік қосу")
     print("3 - Автокөлік бағасын өзгерту")
     print("4 - Автокөлікті өшіру")
-    print("5 - Шығу")
+    print("5 - Автокөлікті басқа қалаға қайтару")
+    print("6 - Шығу")
 
     choice = input("\nТаңдаңыз: ")
 
@@ -179,6 +229,9 @@ while True:
         delete_car()
 
     elif choice == "5":
+        return_car_other_city()
+
+    elif choice == "6":
         print("Бағдарлама аяқталды.")
         break
 
@@ -186,4 +239,4 @@ while True:
         print("Қате таңдау!")
 
 
-conn.close()
+conn.close()  
