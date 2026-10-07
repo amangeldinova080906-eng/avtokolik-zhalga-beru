@@ -61,7 +61,7 @@ def add_car():
 
     conn.commit()
 
-    print("✅ Автокөлік сәтті қосылды!")
+    print(" Автокөлік сәтті қосылды!")
 
 
 # 3. Автокөліктің бағасын өзгерту
@@ -80,9 +80,9 @@ def update_car():
     conn.commit()
 
     if cursor.rowcount > 0:
-        print("✅ Автокөлік бағасы өзгертілді!")
+        print(" Автокөлік бағасы өзгертілді!")
     else:
-        print("❌ Мұндай ID табылмады.")
+        print(" Мұндай ID табылмады.")
 
 
 # 4. Автокөлікті өшіру
@@ -99,9 +99,9 @@ def delete_car():
     conn.commit()
 
     if cursor.rowcount > 0:
-        print("✅ Автокөлік өшірілді!")
+        print(" Автокөлік өшірілді!")
     else:
-        print("❌ Мұндай ID табылмады.")
+        print("Мұндай ID табылмады.")
 
 
 # Негізгі мәзір
@@ -135,6 +135,6 @@ while True:
         break
 
     else:
-        print("❌ Қате таңдау!")
+        print(" Қате таңдау!")
 
 conn.close()
