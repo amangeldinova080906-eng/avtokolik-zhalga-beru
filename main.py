@@ -18,15 +18,28 @@ cursor = conn.cursor()
 # 1. Автокөліктерді көрсету
 def show_cars():
     cursor.execute("""
-        SELECT avtokolik_id, marka, model, memlekettik_nomer,
-               zhyl, bagasy_kunine, kui, filial_id
-        FROM Avtokolikter
-        ORDER BY avtokolik_id
+        SELECT
+            a.avtokolik_id,
+            a.marka,
+            a.model,
+            a.memlekettik_nomer,
+            a.zhyl,
+            a.bagasy_kunine,
+            a.kui,
+            f.qala
+        FROM Avtokolikter a
+        JOIN Filialdar f
+            ON a.filial_id = f.filial_id
+        ORDER BY a.avtokolik_id
     """)
 
     cars = cursor.fetchall()
 
     print("\n===== АВТОКӨЛІКТЕР =====")
+
+    if not cars:
+        print("Автокөліктер табылмады.")
+        return
 
     for car in cars:
         print(
@@ -40,6 +53,22 @@ def show_cars():
         )
 
 
+# Филиалдарды көрсету
+def show_filials():
+    cursor.execute("""
+        SELECT filial_id, qala
+        FROM Filialdar
+        ORDER BY filial_id
+    """)
+
+    filials = cursor.fetchall()
+
+    print("\n===== ФИЛИАЛДАР =====")
+
+    for filial in filials:
+        print(f"{filial[0]} - {filial[1]}")
+
+
 # 2. Жаңа автокөлік қосу
 def add_car():
     print("\n===== ЖАҢА АВТОКӨЛІК ҚОСУ =====")
@@ -50,7 +79,23 @@ def add_car():
     zhyl = int(input("Жылы: "))
     baga = float(input("Күніне бағасы: "))
     kui = input("Күйі (Бос/Брондалды): ")
-    filial = int(input("Филиал ID (1 немесе 2): "))
+
+    # Қолжетімді филиалдарды көрсету
+    show_filials()
+
+    filial = int(input("\nФилиал ID таңдаңыз: "))
+
+    # Мұндай филиал бар екенін тексеру
+    cursor.execute(
+        "SELECT qala FROM Filialdar WHERE filial_id = ?",
+        filial
+    )
+
+    selected_filial = cursor.fetchone()
+
+    if selected_filial is None:
+        print("Мұндай филиал табылмады.")
+        return
 
     cursor.execute("""
         INSERT INTO Avtokolikter
@@ -61,7 +106,10 @@ def add_car():
 
     conn.commit()
 
-    print(" Автокөлік сәтті қосылды!")
+    print(
+        f"Автокөлік сәтті қосылды! "
+        f"Филиал: {selected_filial[0]}"
+    )
 
 
 # 3. Автокөліктің бағасын өзгерту
@@ -80,9 +128,9 @@ def update_car():
     conn.commit()
 
     if cursor.rowcount > 0:
-        print(" Автокөлік бағасы өзгертілді!")
+        print("Автокөлік бағасы өзгертілді!")
     else:
-        print(" Мұндай ID табылмады.")
+        print("Мұндай ID табылмады.")
 
 
 # 4. Автокөлікті өшіру
@@ -99,7 +147,7 @@ def delete_car():
     conn.commit()
 
     if cursor.rowcount > 0:
-        print(" Автокөлік өшірілді!")
+        print("Автокөлік өшірілді!")
     else:
         print("Мұндай ID табылмады.")
 
@@ -135,6 +183,7 @@ while True:
         break
 
     else:
-        print(" Қате таңдау!")
+        print("Қате таңдау!")
+
 
 conn.close()
