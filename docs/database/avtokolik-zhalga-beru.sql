@@ -292,3 +292,19 @@ JOIN Avtokolikter a
 JOIN Filialdar f
     ON b.filial_id = f.filial_id;
 GO
+
+-- Қызметкерлер кестесі
+CREATE TABLE Qyzmetkerler (
+    qyzmetker_id INT IDENTITY(1,1) PRIMARY KEY,
+    aty_zhoni NVARCHAR(100) NOT NULL,
+    login NVARCHAR(50) NOT NULL UNIQUE,
+    password_hash NVARCHAR(255) NOT NULL,
+    rol NVARCHAR(30) NOT NULL,
+    filial_id INT NULL,
+
+    FOREIGN KEY (filial_id) REFERENCES Filialdar(filial_id),
+
+    CONSTRAINT CK_Qyzmetkerler_Rol CHECK (
+        rol IN (N'Директор', N'Менеджер', N'Сотрудник')
+    )
+);
