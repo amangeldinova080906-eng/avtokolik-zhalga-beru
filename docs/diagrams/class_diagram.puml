@@ -1,0 +1,98 @@
+@startuml
+
+title Автокөлікті жалға беру жүйесі - Class Diagram
+
+skinparam classAttributeIconSize 0
+
+class Filialdar {
+    +filial_id : int
+    +qala : string
+    +mekenzhai : string
+    --
+    +filialAqparatynKoru() : string
+    +kolikterdiKoru() : list
+}
+
+class Avtokolikter {
+    +avtokolik_id : int
+    +marka : string
+    +model : string
+    +memlekettik_nomer : string
+    +zhyl : int
+    +bagasy_kunine : decimal
+    +kui : string
+    +filial_id : int
+    --
+    +bosPa() : boolean
+    +baganyOzgerту(zhanaBaga : decimal) : void
+    +filialAuyastyru(filialId : int) : void
+    +kuidiOzgerту(zhanaKui : string) : void
+}
+
+class Klientter {
+    +klient_id : int
+    +aty_zhoni : string
+    +telefon : string
+    --
+    +tirkelu() : void
+    +kolikIzdeu() : list
+    +bronJasau() : void
+}
+
+class Brondau {
+    +bron_id : int
+    +klient_id : int
+    +avtokolik_id : int
+    +filial_id : int
+    +bron_kuni : date
+    +alu_kuni : date
+    +kui : string
+    --
+    +bronJasau() : void
+    +bronRastau() : void
+    +bronBoldyrmau() : void
+}
+
+class ZhalgaAlu {
+    +zhalga_id : int
+    +klient_id : int
+    +avtokolik_id : int
+    +alu_filial_id : int
+    +qaitaru_filial_id : int
+    +alu_kuni : date
+    +qaitaru_kuni : date
+    +kui : string
+    --
+    +zhalgaBeru() : void
+    +koliktiQaitaru() : void
+    +basqaQaladaQaitaru() : void
+    +jalpyBaganyEsepteu() : decimal
+}
+
+class Qyzmetkerler {
+    +qyzmetker_id : int
+    +aty_zhoni : string
+    +login : string
+    +password_hash : string
+    +rol : string
+    +filial_id : int
+    --
+    +juiegeKiru() : boolean
+    +rukhsatTekseru() : boolean
+    +shygu() : void
+}
+
+Filialdar "1" -- "0..*" Avtokolikter
+Filialdar "1" -- "0..*" Qyzmetkerler
+Filialdar "1" -- "0..*" Brondau
+
+Filialdar "1" -- "0..*" ZhalgaAlu : alu ornу
+Filialdar "1" -- "0..*" ZhalgaAlu : qaitaru ornу
+
+Klientter "1" -- "0..*" Brondau
+Klientter "1" -- "0..*" ZhalgaAlu
+
+Avtokolikter "1" -- "0..*" Brondau
+Avtokolikter "1" -- "0..*" ZhalgaAlu
+
+@enduml

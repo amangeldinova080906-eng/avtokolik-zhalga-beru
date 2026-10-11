@@ -1,0 +1,33 @@
+@startuml
+left to right direction
+
+actor "Клиент" as Client
+actor "Директор" as Director
+actor "Менеджер" as Manager
+actor "Қызметкер" as Employee
+
+rectangle "Автокөлікті жалға беру жүйесі" {
+    usecase "Автокөлікті іздеу" as UC1
+    usecase "Брондау жасау" as UC2
+    usecase "Брондауды растау" as UC3
+    usecase "Автокөліктерді басқару" as UC4
+    usecase "Автокөлікті беру" as UC5
+    usecase "Басқа қалада қайтару" as UC6
+    usecase "Жалға алу тарихын қарау" as UC7
+}
+
+Client --> UC1
+Client --> UC2
+
+Manager --> UC3
+
+Director --> UC3
+Director --> UC4
+Director --> UC6
+Director --> UC7
+
+Employee --> UC5
+Employee --> UC6
+Employee --> UC7
+
+@enduml
