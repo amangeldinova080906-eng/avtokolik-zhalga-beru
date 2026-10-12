@@ -308,4 +308,4 @@ CREATE TABLE Qyzmetkerler (
         rol IN (N'Директор', N'Менеджер', N'Сотрудник')
     )
 );
--- Eldana
+-- test1
